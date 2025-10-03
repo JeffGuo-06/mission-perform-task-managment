@@ -17,18 +17,25 @@ function StatusDropdown({ value, onChange, variant = 'pill' }) {
 
   const currentStatus = statusOptions.find(option => option.value === value)
 
-  // Update menu position when opened
-  useEffect(() => {
-    if (isOpen && buttonRef.current) {
+  // Calculate position helper
+  const updatePosition = () => {
+    if (buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect()
       setMenuPosition({
-        top: rect.bottom + window.scrollY + 8,
-        left: rect.left + window.scrollX
+        top: rect.bottom + 8,
+        left: rect.left
       })
+    }
+  }
+
+  // Update menu position when opened
+  useEffect(() => {
+    if (isOpen) {
+      updatePosition()
     }
   }, [isOpen])
 
-  // Handle click outside
+  // Handle click outside and scroll
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -39,15 +46,28 @@ function StatusDropdown({ value, onChange, variant = 'pill' }) {
       }
     }
 
+    const handleScroll = () => {
+      setIsOpen(false)
+    }
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
+      window.addEventListener('scroll', handleScroll, true)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+        window.removeEventListener('scroll', handleScroll, true)
+      }
     }
   }, [isOpen])
 
   const handleSelect = (option) => {
     onChange(option.value)
     setIsOpen(false)
+  }
+
+  const handleToggle = () => {
+    updatePosition()
+    setIsOpen(!isOpen)
   }
 
   return (
@@ -57,7 +77,7 @@ function StatusDropdown({ value, onChange, variant = 'pill' }) {
           ref={buttonRef}
           type="button"
           className="status-dropdown-button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={handleToggle}
           style={{
             backgroundColor: currentStatus.color,
             borderColor: currentStatus.color,

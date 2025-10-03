@@ -49,6 +49,24 @@
   gap: 0.5rem;
 }
 
+/* Custom Scrollbar */
+.drawer-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.drawer-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.drawer-content::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+.drawer-content::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
 /* Field Groups */
 .field-group {
   display: flex;
@@ -137,11 +155,15 @@
   color: var(--color-text-secondary);
   line-height: 1.6;
   white-space: pre-wrap;
-  flex: 1;
   cursor: pointer;
   word-wrap: break-word;
   overflow-wrap: break-word;
   min-width: 0;
+  display: block;
+  overflow: visible;
+  text-overflow: clip;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
 }
 
 .editable-description-input {

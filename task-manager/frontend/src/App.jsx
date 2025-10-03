@@ -4,6 +4,7 @@ import Header from './components/Header'
 import TaskForm from './components/TaskForm'
 import TaskList from './components/TaskList'
 import TaskDrawer from './components/TaskDrawer'
+import API_URL from './config'
 import './App.css'
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
   // Fetch all tasks
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('/api/tasks')
+      const response = await axios.get(`${API_URL}/api/tasks`)
       setTasks(response.data)
     } catch (error) {
       console.error('Error fetching tasks:', error)
@@ -29,7 +30,7 @@ function App() {
   // Create task
   const createTask = async (taskData) => {
     try {
-      await axios.post('/api/tasks', taskData)
+      await axios.post(`${API_URL}/api/tasks`, taskData)
       fetchTasks()
     } catch (error) {
       console.error('Error creating task:', error)
@@ -39,7 +40,7 @@ function App() {
   // Update task
   const updateTask = async (id, taskData) => {
     try {
-      await axios.put(`/api/tasks/${id}`, taskData)
+      await axios.put(`${API_URL}/api/tasks/${id}`, taskData)
       fetchTasks()
       setEditingTask(null)
     } catch (error) {
@@ -50,7 +51,7 @@ function App() {
   // Delete task
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`/api/tasks/${id}`)
+      await axios.delete(`${API_URL}/api/tasks/${id}`)
       fetchTasks()
     } catch (error) {
       console.error('Error deleting task:', error)
