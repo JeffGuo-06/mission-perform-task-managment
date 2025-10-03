@@ -37,24 +37,41 @@ function App() {
     }
   }
 
-  // Update task
+  // Update task with optimistic update
   const updateTask = async (id, taskData) => {
+    // Optimistic update: update UI immediately
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task._id === id ? { ...task, ...taskData } : task
+      )
+    )
+
+    // Also update selectedTask if it's the one being updated
+    if (selectedTask && selectedTask._id === id) {
+      setSelectedTask(prev => ({ ...prev, ...taskData }))
+    }
+
     try {
       await axios.put(`${API_URL}/api/tasks/${id}`, taskData)
-      fetchTasks()
       setEditingTask(null)
     } catch (error) {
       console.error('Error updating task:', error)
+      // Revert on error by refetching
+      fetchTasks()
     }
   }
 
-  // Delete task
+  // Delete task with optimistic update
   const deleteTask = async (id) => {
+    // Optimistic update: remove from UI immediately
+    setTasks(prevTasks => prevTasks.filter(task => task._id !== id))
+
     try {
       await axios.delete(`${API_URL}/api/tasks/${id}`)
-      fetchTasks()
     } catch (error) {
       console.error('Error deleting task:', error)
+      // Revert on error by refetching
+      fetchTasks()
     }
   }
 
